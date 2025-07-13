@@ -1,18 +1,16 @@
-
 const NUMBER_OF_CELLS = 9;
+
 const gameBoard = document.getElementById("board");
-const gameOver = document.getElementById('game-over');
+const gameOverMessage = document.getElementById('game-over');
 const restartGame = document.querySelector('button');
 
-// create grid
+// Create game board
 for (let i = 0; i < NUMBER_OF_CELLS; i++) {
 	const cell = document.createElement('li');
 	gameBoard.appendChild(cell);
 }
 
-
-const cells = gameBoard.querySelectorAll('li');
-const cellsArray = [...cells];
+const cells = [...gameBoard.querySelectorAll('li')];
 
 function userMove(cell) {
 	if (cell.textContent !== '') return;
@@ -20,58 +18,60 @@ function userMove(cell) {
 }
 
 function computerMove() {
-	const emptyCells = cellsArray.filter(cell => cell.textContent === '');
+	const emptyCells = cells.filter(cell => cell.textContent === '');
 	if (emptyCells.length === 0) return;
 
 	const randomNumber = Math.floor(Math.random() * emptyCells.length);
 	emptyCells[randomNumber].textContent = 'X';
 }
 
-function isGameOver() {
-	const emptyCells = cellsArray.filter(cell => cell.textContent === '');
-	if (cellsArray[0].textContent === 'O' && cellsArray[1].textContent === 'O' && cellsArray[2].textContent === 'O' ||
-		cellsArray[0].textContent === 'X' && cellsArray[1].textContent === 'X' && cellsArray[2].textContent === 'X' ||
-		cellsArray[3].textContent === 'O' && cellsArray[4].textContent === 'O' && cellsArray[5].textContent === 'O' ||
-		cellsArray[3].textContent === 'X' && cellsArray[4].textContent === 'X' && cellsArray[5].textContent === 'X' ||
-		cellsArray[6].textContent === 'O' && cellsArray[7].textContent === 'O' && cellsArray[8].textContent === 'O' ||
-		cellsArray[6].textContent === 'X' && cellsArray[7].textContent === 'X' && cellsArray[8].textContent === 'X' ||
-		cellsArray[0].textContent === 'O' && cellsArray[4].textContent === 'O' && cellsArray[8].textContent === 'O' ||
-		cellsArray[0].textContent === 'X' && cellsArray[4].textContent === 'X' && cellsArray[8].textContent === 'X' ||
-		cellsArray[2].textContent === 'O' && cellsArray[4].textContent === 'O' && cellsArray[6].textContent === 'O' ||
-		cellsArray[2].textContent === 'X' && cellsArray[4].textContent === 'X' && cellsArray[6].textContent === 'X' ||
-		cellsArray[0].textContent === 'O' && cellsArray[3].textContent === 'O' && cellsArray[6].textContent === 'O' ||
-		cellsArray[0].textContent === 'X' && cellsArray[3].textContent === 'X' && cellsArray[6].textContent === 'X' ||
-		cellsArray[1].textContent === 'O' && cellsArray[4].textContent === 'O' && cellsArray[7].textContent === 'O' ||
-		cellsArray[1].textContent === 'X' && cellsArray[4].textContent === 'X' && cellsArray[7].textContent === 'X' ||
-		cellsArray[2].textContent === 'O' && cellsArray[5].textContent === 'O' && cellsArray[8].textContent === 'O' ||
-		cellsArray[2].textContent === 'X' && cellsArray[5].textContent === 'X' && cellsArray[8].textContent === 'X'
-	) {
+function checkGameOver() {
+	const winCombinations = [
+		[0, 1, 2], [3, 4, 5], [6, 7, 8],
+		[0, 3, 6], [1, 4, 7], [2, 5, 8],
+		[0, 4, 8], [2, 4, 6]
+	];
 
-		gameOver.textContent = 'GAME OVERRRRR some one win';
-	} else if (!emptyCells) {
-		debugger
-		gameOver.textContent = 'GAME OVERRRRR ITS A DROW';
+	for (const [a, b, c] of winCombinations) {
+		const valA = cells[a].textContent;
+		const valB = cells[b].textContent;
+		const valC = cells[c].textContent;
+
+		if (valA && valA === valB && valB === valC) {
+			gameOverMessage.textContent = `GAME OVER — '${valA}' wins!`;
+			disableGameBoard();
+			return;
+		}
+	}
+
+	const isDraw = [...cells].every(cell => cell.textContent !== '');
+	if (isDraw) {
+		gameOverMessage.textContent = "GAME OVER — It's a draw!";
+		disableGameBoard();
 	}
 }
 
-// start game
-cellsArray.forEach((cell) => {
+function disableGameBoard() {
+	cells.forEach(cell => {
+		cell.style.pointerEvents = 'none';
+	})
+}
+
+cells.forEach((cell) => {
 	cell.addEventListener('click', function () {
 		// avoid fast double click on same cell
 		if (cell.textContent !== '') return;
 		userMove(cell);
-		computerMove()
-
-		isGameOver(cell)
+		computerMove();
+		checkGameOver();
 	})
 
 });
 
 restartGame.addEventListener('click', function () {
-	cellsArray.forEach((cell) => {
-		cell.textContent = ''
+	cells.forEach((cell) => {
+		cell.textContent = '';
+		cell.style.pointerEvents = 'auto';
 	});
-	if (gameOver.textContent !== '') {
-		gameOver.textContent = ''
-	}
+	gameOverMessage.textContent = '';
 })
