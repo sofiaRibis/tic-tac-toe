@@ -1,0 +1,14 @@
+ul {
+	width: min-content;
+	list-style: none;
+	display: grid;
+	grid-template-rows: repeat(3, 1fr);
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0;
+}
+
+li {
+	outline: 1px solid black;
+	aspect-ratio: 1;
+	width: 80px;
+}
