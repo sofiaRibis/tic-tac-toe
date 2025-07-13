@@ -1,28 +1,39 @@
-const NUMBER_OF_CELLS = 9;
+const CELL_COUNT = 9;
 let currentPlayer = 'O';
-let selectedMode = '';
+let gameMode = '';
 
 const gameBoard = document.getElementById("board");
 const gameOverMessage = document.getElementById('game-over-message');
 const restartButton = document.getElementById('restart');
-const startModal = document.getElementById('start-game-dialog');
-const endModal = document.getElementById('game-over-dialog');
+const startDialog = document.getElementById('start-game-dialog');
+const endDialog = document.getElementById('game-over-dialog');
 const onePlayerOption = document.getElementById('one-player');
 const twoPlayersOption = document.getElementById('two-players');
 
 // Init Game Board
-for (let i = 0; i < NUMBER_OF_CELLS; i++) {
+for (let i = 0; i < CELL_COUNT; i++) {
 	const cell = document.createElement('li');
 	gameBoard.appendChild(cell);
 }
 
 const cells = [...gameBoard.querySelectorAll('li')];
 
+const PLAYER_COLORS = {
+	O: "#ff006b",
+	X: "#00e0ff",
+}
+
+const markCell = (cell, symbol) => {
+	if (cell.textContent !== '') return;
+
+	cell.textContent = symbol;
+	cell.style.setProperty('--player-color', PLAYER_COLORS[symbol]);
+	cell.classList.add('current-player');
+}
+
 const playerMove = (cell, symbol) => {
 	if (cell.textContent !== '') return;
-	cell.textContent = symbol;
-	cell.style.setProperty('--player-color', '#ff006b');
-	cell.classList.add('current-player');
+	markCell(cell, symbol);
 }
 
 const computerMove = () => {
@@ -30,9 +41,7 @@ const computerMove = () => {
 	if (emptyCells.length === 0) return;
 
 	const randomNumber = Math.floor(Math.random() * emptyCells.length);
-	emptyCells[randomNumber].textContent = 'X';
-	emptyCells[randomNumber].style.setProperty('--player-color', '#00e0ff');
-	emptyCells[randomNumber].classList.add('current-player');
+	markCell(emptyCells[randomNumber], 'X');
 }
 
 const onePlayerHandler = (cell) => {
@@ -45,19 +54,12 @@ const onePlayerHandler = (cell) => {
 		computerMove();
 		checkGameOver();
 		enableGameBoard();
-	}, 100);
+	}, 300);
 }
 
 const twoPlayersHandler = (cell) => {
-	if (cell.textContent !== '') return;
-	cell.textContent = currentPlayer;
+	markCell(cell, currentPlayer);
 	currentPlayer = currentPlayer === 'O' ? 'X' : 'O';
-	if (currentPlayer === 'O') {
-		cell.style.setProperty('--player-color', '#ff006b');
-	} else {
-		cell.style.setProperty('--player-color', '#00e0ff');
-	}
-	cell.classList.add('current-player');
 }
 
 const checkGameOver = () => {
@@ -73,14 +75,10 @@ const checkGameOver = () => {
 		const valC = cells[c].textContent;
 
 		if (valA && valA === valB && valB === valC) {
-			if (valA === 'O') {
-				renderMessage(`Yay, player ${valA} won 🥳`);
-			} else {
-				renderMessage(`Hehe X has won 🚀`);
-			}
+			renderMessage(valA === 'O' ? `Yay, player ${valA} won 🥳` : `Hehe X has won 🚀`)
 			disableGameBoard();
 			setTimeout(() => {
-				endModal.open = true;
+				endDialog.open = true;
 			}, 1200);
 			return true;
 		}
@@ -91,7 +89,7 @@ const checkGameOver = () => {
 		renderMessage("Ops... it's a draw 🤷‍♀️")
 		disableGameBoard();
 		setTimeout(() => {
-			endModal.open = true;
+			endDialog.open = true;
 		}, 1200);
 		return true;
 	}
@@ -106,9 +104,8 @@ const restartGame = () => {
 	});
 	enableGameBoard();
 	renderMessage('');
-
-	endModal.open = false;
-	startModal.open = true;
+	endDialog.open = false;
+	startDialog.open = true;
 }
 
 const renderMessage = (message) => {
@@ -126,20 +123,19 @@ const enableGameBoard = () => {
 	})
 }
 
-const closeModal = (option) => {
-	selectedMode = option;
-	startModal.open = false;
+const selectGameMode = (mode) => {
+	gameMode = mode;
+	startDialog.open = false;
 }
-
 
 cells.forEach((cell) => {
 	cell.addEventListener('click', function () {
 		// avoid fast double click on same cell
 		if (cell.textContent !== '') return;
 
-		if (selectedMode === 'one-player') {
+		if (gameMode === 'one-player') {
 			onePlayerHandler(cell)
-		} else if (selectedMode === 'two-player') {
+		} else if (gameMode === 'two-player') {
 			twoPlayersHandler(cell);
 		}
 		checkGameOver();
@@ -148,7 +144,7 @@ cells.forEach((cell) => {
 });
 
 
-onePlayerOption.addEventListener('click', closeModal.bind(null, 'one-player'));
-twoPlayersOption.addEventListener('click', closeModal.bind(null, 'two-player'));
+onePlayerOption.addEventListener('click', () => selectGameMode('one-player'));
+twoPlayersOption.addEventListener('click', () => selectGameMode('two-player'));
 
 restartButton.addEventListener('click', restartGame);
