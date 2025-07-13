@@ -1,0 +1,31 @@
+h1 {
+	font-weight: 900;
+	font-size: 2em;
+}
+
+p {
+	color: $grey;
+}
+
+.title {
+	font-size: 3em;
+	animation: glitch 0.9s linear infinite;
+	animation-delay: 1s;
+	color: $purple;
+	text-shadow: -3px 0px $pink, -7px 2px $blue;
+}
+
+@keyframes glitch {
+	2%,
+	64% {
+		transform: translate(2px, 0) skew(0deg);
+		text-shadow: -4px 0px $pink, 4px 0px $blue;
+	}
+	4%,
+	60% {
+		transform: translate(-2px, 0) skew(-4deg);
+	}
+	62% {
+		transform: translate(0, 0) skew(5deg);
+	}
+}

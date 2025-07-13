@@ -1,0 +1,18 @@
+* {
+	@include normalize;
+
+	body {
+		font-family: $font-family;
+
+		//background-color: $bg-body;
+		//height: 100vh;
+		//display: flex;
+		//align-items: center;
+		//justify-content: center;
+	}
+
+	button,
+	a {
+		cursor: pointer;
+	}
+}

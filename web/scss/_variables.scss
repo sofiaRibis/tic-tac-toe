@@ -1,0 +1,27 @@
+//colors
+$purple: #7000ff;
+$blue: #00e0ff;
+$pink: #ff006b;
+$bg-color: #fdfdfd;
+$white: #ffffff;
+$grey: #cacaca;
+$overlay-color: rgba(30, 30, 30, 0.2);
+$bg-body: rgb(30, 30, 30);
+
+//font family
+$font-family: "Urbanist", sans-serif;
+
+//font size
+$h1: 48px;
+$p: 20px;
+$start-btn: 24px;
+$end-btn: 36px;
+
+//break points
+$desktop: 1400px;
+$mobile: 347px;
+$tablet: 700px;
+
+:root {
+	--player-color: $pink;
+}

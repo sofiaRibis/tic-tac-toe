@@ -4,17 +4,40 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>tic tac toe</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;900&display=swap"
+			rel="stylesheet"
+		/>
+
+		<link rel="stylesheet" href="web/scss/style.css" />
 		<script src="./script.js" defer></script>
-		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<dialog open id="start-game">
-			<h2>How many players?</h2>
-			<button id="one-player">one player</button>
-			<button id="two-players">two players</button>
+		<dialog open id="start-game-dialog">
+			<div class="o tic">O</div>
+			<h1 class="title">Tic Tac Toe</h1>
+			<div class="x tic">x</div>
+			<div class="choose-player">
+				<button id="one-player">One player</button>
+				<button id="two-players">Two players</button>
+			</div>
 		</dialog>
-		<ul id="board"></ul>
-		<div id="game-over"></div>
-		<button id="restart">restart</button>
+		<main>
+			<div>
+				<h1 class="page-title">Hello, Player <span>O</span></h1>
+				<p>Click a cell to start</p>
+			</div>
+			<ul id="board"></ul>
+			<div class="o tic">O</div>
+			<div class="x tic">x</div>
+		</main>
+		<dialog id="game-over-dialog">
+			<div class="game-over">
+				<p id="game-over-message"></p>
+				<button id="restart">restart</button>
+			</div>
+		</dialog>
 	</body>
 </html>

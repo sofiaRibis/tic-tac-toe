@@ -1,0 +1,21 @@
+@mixin normalize {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+@mixin padding-desktop {
+	padding: 86px 69px;
+}
+
+@mixin padding-mobile {
+	padding: 5% 7%;
+}
+
+@mixin flex-box($direction, $gap, $align, $justify) {
+	display: flex;
+	flex-direction: $direction;
+	gap: $gap;
+	align-items: $align;
+	justify-content: $justify;
+}

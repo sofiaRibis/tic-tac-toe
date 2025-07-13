@@ -1,0 +1,76 @@
+dialog {
+	overflow: hidden;
+	display: none;
+	&:open {
+		display: block;
+		background-color: $bg-color;
+		height: 100vh;
+		@include padding-mobile;
+		@include flex-box(column, 0, center, center);
+		position: relative;
+		z-index: 1000;
+
+		margin-bottom: 70px;
+
+		&#start-game-dialog {
+			.tic {
+				position: absolute;
+				font-size: 288px;
+				font-weight: 900;
+				&.x {
+					bottom: -100px;
+					left: -70px;
+					color: $blue;
+				}
+				&.o {
+					top: -170px;
+					right: -80px;
+					color: $pink;
+				}
+			}
+
+			.title {
+				padding-bottom: 81px;
+			}
+
+			.choose-player {
+				@include flex-box(row, 2em, center, space-between);
+			}
+		}
+
+		&#game-over-dialog {
+			@include flex-box(column, 0, center, center);
+			position: absolute;
+			inset: 0;
+			z-index: 2;
+			background-color: $overlay-color;
+			backdrop-filter: blur(27px);
+			height: 100vh;
+			width: 100%;
+			.game-over {
+				@include flex-box(column, 0, center, space-between);
+				background-color: $purple;
+				padding: 2em 1em;
+				width: 100%;
+				box-shadow: -0.3em 0.3em 0 0 $pink, 0.3em -0.3em 0 0 $blue;
+
+				p {
+					color: $white;
+					font-weight: 900;
+					font-size: 1.5em;
+					display: flex;
+					align-items: center;
+					gap: 10px;
+				}
+				#restart {
+					all: unset;
+					padding-top: 1.5em;
+					background-color: transparent;
+					color: $white;
+					font-size: 1.2em;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}
