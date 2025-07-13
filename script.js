@@ -1,10 +1,15 @@
 const NUMBER_OF_CELLS = 9;
+let currentPlayer = 'O';
+let selectedMode = '';
 
 const gameBoard = document.getElementById("board");
 const gameOverMessage = document.getElementById('game-over');
-const restartGame = document.querySelector('button');
+const restartButton = document.getElementById('restart');
+const startModal = document.getElementById('start-game');
+const onePlayerOption = document.getElementById('one-player');
+const twoPlayersOption = document.getElementById('two-players');
 
-// Create game board
+// Init Game Board
 for (let i = 0; i < NUMBER_OF_CELLS; i++) {
 	const cell = document.createElement('li');
 	gameBoard.appendChild(cell);
@@ -12,12 +17,12 @@ for (let i = 0; i < NUMBER_OF_CELLS; i++) {
 
 const cells = [...gameBoard.querySelectorAll('li')];
 
-function userMove(cell) {
+const playerMove = (cell, symbol) => {
 	if (cell.textContent !== '') return;
-	cell.textContent = 'O';
+	cell.textContent = symbol;
 }
 
-function computerMove() {
+const computerMove = () => {
 	const emptyCells = cells.filter(cell => cell.textContent === '');
 	if (emptyCells.length === 0) return;
 
@@ -25,7 +30,26 @@ function computerMove() {
 	emptyCells[randomNumber].textContent = 'X';
 }
 
-function checkGameOver() {
+const onePlayerHandler = (cell) => {
+	playerMove(cell, 'O');
+
+	if (checkGameOver()) return;
+
+	disableGameBoard();
+	setTimeout(() => {
+		computerMove();
+		checkGameOver();
+		enableGameBoard();
+	}, 100);
+}
+
+const twoPlayersHandler = (cell) => {
+	if (cell.textContent !== '') return;
+	cell.textContent = currentPlayer;
+	currentPlayer = currentPlayer === 'O' ? 'X' : 'O';
+}
+
+const checkGameOver = () => {
 	const winCombinations = [
 		[0, 1, 2], [3, 4, 5], [6, 7, 8],
 		[0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -38,40 +62,67 @@ function checkGameOver() {
 		const valC = cells[c].textContent;
 
 		if (valA && valA === valB && valB === valC) {
-			gameOverMessage.textContent = `GAME OVER — '${valA}' wins!`;
+			renderMessage(`GAME OVER — '${valA}' wins!`)
 			disableGameBoard();
-			return;
+			return true;
 		}
 	}
 
 	const isDraw = [...cells].every(cell => cell.textContent !== '');
 	if (isDraw) {
-		gameOverMessage.textContent = "GAME OVER — It's a draw!";
+		renderMessage("GAME OVER — It's a draw!")
 		disableGameBoard();
+		return true;
 	}
+
+	return false;
 }
 
-function disableGameBoard() {
+const restartGame = () => {
+	cells.forEach((cell) => cell.textContent = '');
+	enableGameBoard();
+	renderMessage('');
+	startModal.open = true;
+}
+
+const renderMessage = (message) => {
+	gameOverMessage.textContent = message;
+};
+
+const disableGameBoard = () => {
 	cells.forEach(cell => {
 		cell.style.pointerEvents = 'none';
 	})
 }
+const enableGameBoard = () => {
+	cells.forEach(cell => {
+		cell.style.pointerEvents = 'auto';
+	})
+}
+
+const closeModal = (option) => {
+	selectedMode = option;
+	startModal.open = false
+}
+
 
 cells.forEach((cell) => {
 	cell.addEventListener('click', function () {
 		// avoid fast double click on same cell
 		if (cell.textContent !== '') return;
-		userMove(cell);
-		computerMove();
+
+		if (selectedMode === 'one-player') {
+			onePlayerHandler(cell)
+		} else if (selectedMode === 'two-player') {
+			twoPlayersHandler(cell);
+		}
 		checkGameOver();
 	})
 
 });
 
-restartGame.addEventListener('click', function () {
-	cells.forEach((cell) => {
-		cell.textContent = '';
-		cell.style.pointerEvents = 'auto';
-	});
-	gameOverMessage.textContent = '';
-})
+
+onePlayerOption.addEventListener('click', closeModal.bind(null, 'one-player'));
+twoPlayersOption.addEventListener('click', closeModal.bind(null, 'two-player'));
+
+restartButton.addEventListener('click', restartGame);
