@@ -7,8 +7,6 @@ const gameOverMessage = document.getElementById('game-over-message');
 const restartButton = document.getElementById('restart');
 const startDialog = document.getElementById('start-game-dialog');
 const endDialog = document.getElementById('game-over-dialog');
-const onePlayerOption = document.getElementById('one-player');
-const twoPlayersOption = document.getElementById('two-players');
 
 // Init Game Board
 for (let i = 0; i < CELL_COUNT; i++) {
@@ -123,11 +121,6 @@ const enableGameBoard = () => {
 	})
 }
 
-const selectGameMode = (mode) => {
-	gameMode = mode;
-	startDialog.open = false;
-}
-
 cells.forEach((cell) => {
 	cell.addEventListener('click', function () {
 		// avoid fast double click on same cell
@@ -135,7 +128,7 @@ cells.forEach((cell) => {
 
 		if (gameMode === 'one-player') {
 			onePlayerHandler(cell)
-		} else if (gameMode === 'two-player') {
+		} else if (gameMode === 'two-players') {
 			twoPlayersHandler(cell);
 		}
 		checkGameOver();
@@ -143,8 +136,9 @@ cells.forEach((cell) => {
 
 });
 
-
-onePlayerOption.addEventListener('click', () => selectGameMode('one-player'));
-twoPlayersOption.addEventListener('click', () => selectGameMode('two-player'));
+// Assegna il gameMode quando il dialog viene chiuso
+startDialog.addEventListener('close', () => {
+	gameMode = startDialog.returnValue;
+})
 
 restartButton.addEventListener('click', restartGame);
