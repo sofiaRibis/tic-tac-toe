@@ -121,20 +121,19 @@ const enableGameBoard = () => {
 	})
 }
 
-cells.forEach((cell) => {
-	cell.addEventListener('click', function () {
-		// avoid fast double click on same cell
-		if (cell.textContent !== '') return;
+gameBoard.addEventListener('click', function (e) {
+	const cell = e.target.closest('li');
 
-		if (gameMode === 'one-player') {
-			onePlayerHandler(cell)
-		} else if (gameMode === 'two-players') {
-			twoPlayersHandler(cell);
-		}
-		checkGameOver();
-	})
+	// avoid fast double click on same cell
+	if (cell.textContent !== '') return;
 
-});
+	if (gameMode === 'one-player') {
+		onePlayerHandler(cell)
+	} else if (gameMode === 'two-players') {
+		twoPlayersHandler(cell);
+	}
+	checkGameOver();
+})
 
 // Assegna il gameMode quando il dialog viene chiuso
 startDialog.addEventListener('close', () => {
